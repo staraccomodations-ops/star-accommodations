@@ -1,0 +1,351 @@
+        /* ── Responsive tweaks ── */
+        @media (max-width: 640px) {
+            .modal {
+                padding: 20px;
+            }
+            .topbar-pts span {
+                display: none;
+            }
+            .topbar-pts {
+                padding: 4px 10px;
+            }
+            .tab-bar {
+                width: 100%;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+            .tab {
+                white-space: nowrap;
+                font-size: 12px;
+                padding: 6px 14px;
+            }
+            .btn-admin-toggle {
+                bottom: 16px;
+                right: 16px;
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+        }
+
+        /* ── COA add button ── */
+        .coa-add-btn {
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 30px;
+            background: var(--teal-light);
+            color: var(--teal);
+            border: .5px solid var(--teal);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .coa-add-btn:hover {
+            background: var(--teal);
+            color: #fff;
+        }
+        .cat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: .5px solid var(--border-strong);
+            font-size: 13px;
+        }
+        .cat-item:last-child {
+            border-bottom: none;
+        }
+        .cat-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 30px;
+        }
+        .fav-chip {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1.5px solid var(--gold);
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            cursor: pointer;
+        }
+        .fav-chip:hover {
+            background: var(--gold);
+            color: #fff;
+        }
+        .cat-badge-in {
+            background: var(--teal-light);
+            color: var(--teal);
+        }
+        .cat-badge-out {
+            background: var(--coral-light);
+            color: var(--coral);
+        }
+        .cat-badge-staff {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+        }
+        .cat-badge-admin {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        /* ── Booking total preview ── */
+        .total-preview {
+            background: var(--surface-2);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-top: 10px;
+        }
+        .total-preview .line {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 13px;
+        }
+        .total-preview .line.total {
+            font-weight: 700;
+            font-size: 16px;
+            border-top: .5px solid var(--border);
+            margin-top: 4px;
+            padding-top: 8px;
+        }
+        .total-preview .discount-line {
+            color: var(--coral);
+        }
+
+        /* Cash type label – hidden by default, shown via JS */
+        #cb-cash-type-group {
+            display: none;
+        }
+
+        /* Replenish badge */
+        .replenish-badge {
+            background: var(--purple-light);
+            color: var(--purple);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 8px;
+            border-radius: 30px;
+            margin-left: 6px;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+        }
+        [data-theme="dark"] .replenish-badge {
+            background: #1e1c3a;
+            color: #b0aaff;
+        }
+
+        /* Transfer badge (bank transfer) */
+        .transfer-badge {
+            background: var(--teal-light);
+            color: var(--teal);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 8px;
+            border-radius: 30px;
+            margin-left: 6px;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+        }
+        [data-theme="dark"] .transfer-badge {
+            background: #132a24;
+            color: #7ad0b0;
+        }
+
+        /* Verified badge */
+        .verified-badge {
+            background: var(--teal-light);
+            color: var(--teal);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        .unverified-badge {
+            background: var(--coral-light);
+            color: var(--coral);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        /* Payment status */
+        .paid-badge {
+            background: var(--teal-light);
+            color: var(--teal);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        .balance-badge {
+            background: var(--coral-light);
+            color: var(--coral);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        .paid-check {
+            color: var(--teal);
+            font-size: 16px;
+            font-weight: 800;
+            margin-left: 2px;
+        }
+        .redeem-badge {
+            background: var(--purple-light, #efe6fb);
+            color: var(--purple, #7a3ecb);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-left: 4px;
+        }
+        .redeem-out {
+            color: var(--purple, #7a3ecb);
+            font-weight: 700;
+        }
+
+        /* Print receipt */
+        .receipt-print {
+            display: none;
+        }
+        .report-print {
+            display: none;
+        }
+        @media print {
+            .report-print {
+                display: block !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: #fff;
+                color: #111;
+                padding: 24px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            .report-print h2 {
+                font-size: 20px;
+                margin-bottom: 2px;
+            }
+            .report-print .rp-sub {
+                font-size: 12px;
+                color: #555;
+                margin-bottom: 16px;
+                border-bottom: 2px solid #333;
+                padding-bottom: 8px;
+            }
+            .report-print .rp-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 4px 0;
+                font-size: 13px;
+                border-bottom: 1px solid #eee;
+            }
+            .report-print .rp-sec {
+                font-weight: 700;
+                font-size: 14px;
+                margin-top: 14px;
+                padding-bottom: 4px;
+            }
+            .report-print .rp-total {
+                font-weight: 700;
+                border-top: 1px solid #333;
+                border-bottom: 2px solid #333;
+            }
+            .report-print table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 12px;
+            }
+            .report-print th, .report-print td {
+                border-bottom: 1px solid #ddd;
+                padding: 5px 6px;
+                text-align: left;
+            }
+            .report-print th {
+                border-bottom: 2px solid #333;
+            }
+            body.printing-report * {
+                visibility: hidden;
+            }
+            body.printing-report .report-print,
+            body.printing-report .report-print * {
+                visibility: visible;
+            }
+        }
+        @media print {
+            .receipt-print {
+                display: block !important;
+                background: white;
+                padding: 30px;
+                max-width: 400px;
+                margin: 0 auto;
+                font-family: 'Georgia', serif;
+                color: #333;
+            }
+            .receipt-print h2 {
+                color: var(--gold-dark);
+                text-align: center;
+                font-size: 22px;
+                border-bottom: 2px solid var(--gold);
+                padding-bottom: 10px;
+            }
+            .receipt-print .star {
+                color: var(--gold);
+                font-size: 28px;
+                display: block;
+                text-align: center;
+                margin: 10px 0;
+            }
+            .receipt-print .thankyou {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                margin: 15px 0;
+            }
+            .receipt-print .details {
+                margin: 15px 0;
+                border-top: 1px dashed #ccc;
+                border-bottom: 1px dashed #ccc;
+                padding: 10px 0;
+            }
+            .receipt-print .details div {
+                display: flex;
+                justify-content: space-between;
+                padding: 4px 0;
+            }
+            .receipt-print .total-line {
+                font-weight: bold;
+                font-size: 16px;
+                border-top: 2px solid #333;
+                margin-top: 8px;
+                padding-top: 8px;
+            }
+            .receipt-print .footer {
+                text-align: center;
+                font-size: 12px;
+                color: #888;
+                margin-top: 20px;
+            }
+            body * {
+                visibility: hidden;
+            }
+            .receipt-print, .receipt-print * {
+                visibility: visible;
+            }
+            .receipt-print {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }

@@ -6,9 +6,13 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#f1f0ec",
-  "theme_color": "#0f6e56",
-  "categories": ["business", "productivity", "finance"],
+  "background_color": "#f3f1ea",
+  "theme_color": "#14213d",
+  "categories": [
+    "business",
+    "productivity",
+    "finance"
+  ],
   "lang": "en",
   "dir": "ltr",
   "icons": [

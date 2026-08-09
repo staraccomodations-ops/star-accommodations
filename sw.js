@@ -2,8 +2,8 @@
 // Provides offline support and installability.
 // Strategy:
 //  - HTML (navigation): network-first, fall back to cache (so updates load when online)
-//  - Everything else (icons, manifest): cache-first
-const CACHE_NAME = 'star-hotel-v1';
+//  - Everything else (CSS, JS modules, icons, manifest): cache-first
+const CACHE_NAME = 'star-hotel-v2';
 const CORE_ASSETS = [
     './',
     './index.html',
@@ -11,7 +11,35 @@ const CORE_ASSETS = [
     './icon.svg',
     './icon-192.png',
     './icon-512.png',
-    './icon-maskable-512.png'
+    './icon-maskable-512.png',
+    './css/01-tokens.css',
+    './css/02-layout.css',
+    './css/03-components.css',
+    './css/04-app.css',
+    './css/05-responsive.css',
+    './js/sw-register.js',
+    './js/00-state.js',
+    './js/01-sync.js',
+    './js/02-core.js',
+    './js/03-dashboard.js',
+    './js/04-bookings.js',
+    './js/05-guests.js',
+    './js/06-loyalty.js',
+    './js/07-analytics.js',
+    './js/08-cashbook.js',
+    './js/09-accounting.js',
+    './js/10-coa.js',
+    './js/11-settings.js',
+    './js/12-actions.js',
+    './js/13-admin-modal.js',
+    './js/14-petty-cash.js',
+    './js/15-transfer-bank.js',
+    './js/16-guest-booking.js',
+    './js/17-journal.js',
+    './js/18-cash-categories.js',
+    './js/19-admin.js',
+    './js/20-reset-export.js',
+    './js/21-init.js'
 ];
 
 self.addEventListener('install', function(event) {

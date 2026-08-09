@@ -1,0 +1,125 @@
+        /* ══════════════════════════════════════════════════════════
+           DESIGN TOKENS — Star Accommodations
+           A refined "boutique hotel ledger" palette: deep navy,
+           warm brass/gold, forest teal, on a soft ivory canvas.
+           ══════════════════════════════════════════════════════════ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --bg: #f3f1ea;
+            --bg-pattern: radial-gradient(circle at 100% 0%, rgba(201, 168, 76, .05), transparent 45%),
+                          radial-gradient(circle at 0% 100%, rgba(15, 110, 86, .05), transparent 40%);
+            --surface: #ffffff;
+            --surface-2: #f8f6f0;
+            --surface-3: #efece2;
+            --border: #e2ddd0;
+            --border-strong: #c9c2ae;
+            --text: #201e18;
+            --text-secondary: #625d4e;
+            --text-muted: #9c9686;
+            --shadow-xs: 0 1px 2px rgba(32, 26, 10, .04);
+            --shadow: 0 4px 18px rgba(32, 26, 10, .07);
+            --shadow-lg: 0 12px 36px rgba(32, 26, 10, .12);
+            --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, .5);
+            --radius: 14px;
+            --radius-sm: 9px;
+            --radius-lg: 20px;
+            --transition: .18s cubic-bezier(.4, 0, .2, 1);
+
+            --gold: #b8923f;
+            --gold-2: #d4af5a;
+            --gold-light: #f6efdb;
+            --gold-dark: #7c5e1f;
+            --gold-grad: linear-gradient(135deg, #d4af5a, #b8923f 55%, #96762e);
+            --navy: #14213d;
+            --navy-2: #1c2f52;
+            --navy-light: #2c4270;
+            --navy-grad: linear-gradient(165deg, #182648 0%, #0f1a30 100%);
+            --teal: #0d6a53;
+            --teal-2: #128264;
+            --teal-light: #e0f2ec;
+            --coral: #c8562e;
+            --coral-light: #f9e9e1;
+            --purple: #6f66d6;
+            --purple-light: #ecebfb;
+            --red: #b2222c;
+            --red-light: #f8e5e6;
+            --green: #1f7a4d;
+            --green-light: #e2f4ea;
+
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, system-ui, sans-serif;
+            --font-serif: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+            --font-num: "Segoe UI", -apple-system, Roboto, system-ui, sans-serif;
+
+            --sidebar-width: 240px;
+            --topbar-height: 60px;
+        }
+
+        /* Dark mode */
+        [data-theme="dark"] {
+            --bg: #111117;
+            --bg-pattern: radial-gradient(circle at 100% 0%, rgba(212, 175, 90, .04), transparent 45%),
+                          radial-gradient(circle at 0% 100%, rgba(18, 130, 100, .05), transparent 40%);
+            --surface: #1a1a22;
+            --surface-2: #212129;
+            --surface-3: #292933;
+            --border: #2c2c38;
+            --border-strong: #3d3d4d;
+            --text: #ececee;
+            --text-secondary: #aeaebb;
+            --text-muted: #77778a;
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, .3);
+            --shadow: 0 4px 18px rgba(0, 0, 0, .35);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, .5);
+            --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, .04);
+            --gold-light: #2b2416;
+            --teal-light: #10251f;
+            --coral-light: #2a1912;
+            --purple-light: #1e1c33;
+            --red-light: #2a1417;
+            --green-light: #12281c;
+        }
+
+        html {
+            scrollbar-gutter: stable;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-pattern), var(--bg);
+            background-attachment: fixed;
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.55;
+            transition: background var(--transition), color var(--transition);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 { letter-spacing: -.01em; }
+
+        ::selection {
+            background: var(--gold-2);
+            color: #1a1a18;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
