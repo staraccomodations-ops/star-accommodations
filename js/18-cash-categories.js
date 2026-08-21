@@ -225,7 +225,7 @@
                 const amt = parseFloat(ov.querySelector('#cb-amt').value);
                 if (!selected) { alert('Please choose a category from the list.'); ov.querySelector('#cb-cat')
                         .focus(); return false; }
-                if (!amt || amt <= 0) { alert('Please enter an amount greater than zero.'); return false; }
+                // if (!amt || amt <= 0) { alert('Please enter an amount greater than zero.'); return false;  }
                 const method = ov.querySelector('#cb-method').value;
                 let cashType;
                 if (adminUnlocked) {
