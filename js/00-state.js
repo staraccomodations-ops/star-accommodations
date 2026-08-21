@@ -163,8 +163,8 @@
             { label: 'Insurance', dir: 'out', account: 'Insurance', reg: false, custom: false },
             { label: 'Bank charges', dir: 'out', account: 'Bank Charges', reg: false, custom: false },
             { label: 'Other expense', dir: 'out', account: 'Miscellaneous Expense', reg: false, custom: false },
-            { label: "Owner's Capital", dir: 'in', account: "Owner's Capital", reg: false, custom: false },
-            { label: "Owner's Drawings", dir: 'out', account: "Owner's Drawings", reg: false, custom: false }
+            { label: "Owner's Capital", dir: 'both', account: "Owner's Capital", reg: false, custom: false },
+            { label: "Owner's Drawings", dir: 'both', account: "Owner's Drawings", reg: false, custom: false }
         ];
 
         // Sub-categories (common items) shown when a parent category is selected in the Cash Book.
@@ -275,11 +275,11 @@
         }
         // Migration: add Owner's Capital / Owner's Drawings categories to installs that predate them
         if (!cashCategories.some(c => c.label === "Owner's Capital")) {
-            cashCategories.push({ label: "Owner's Capital", dir: 'in', account: "Owner's Capital", reg: false, custom: false });
+            cashCategories.push({ label: "Owner's Capital", dir: 'both', account: "Owner's Capital", reg: false, custom: false });
             saveCashCategories();
         }
         if (!cashCategories.some(c => c.label === "Owner's Drawings")) {
-            cashCategories.push({ label: "Owner's Drawings", dir: 'out', account: "Owner's Drawings", reg: false, custom: false });
+            cashCategories.push({ label: "Owner's Drawings", dir: 'both', account: "Owner's Drawings", reg: false, custom: false });
             saveCashCategories();
         }
 
