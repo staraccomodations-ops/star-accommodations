@@ -312,8 +312,29 @@ const DEFAULT_CASH_CATEGORIES = [
     custom: false,
   },
   {
+    label: "Petty Cash",
+    dir: "in",
+    account: "Petty Cash",
+    reg: true,
+    custom: false,
+  },
+  {
+    label: "Petty Cash",
+    dir: "out",
+    account: "Petty Cash",
+    reg: true,
+    custom: false,
+  },
+  {
     label: "Owner's Capital",
     dir: "in",
+    account: "Owner's Capital",
+    reg: false,
+    custom: false,
+  },
+  {
+    label: "Owner's Capital",
+    dir: "out",
     account: "Owner's Capital",
     reg: false,
     custom: false,
@@ -463,14 +484,22 @@ let capitalCat = cashCategories.find((c) => c.label === "Owner's Capital");
 if (capitalCat) {
   capitalCat.allowNegative = true;
 } else {
-  cashCategories.push({
+  cashCategories.push([{
     label: "Owner's Capital",
     dir: "in",
     account: "Owner's Capital",
     reg: false,
     custom: false,
     allowNegative: true,
-  });
+  },
+  {
+    label: "Owner's Capital",
+    dir: "out",
+    account: "Owner's Capital",
+    reg: false,
+    custom: false,
+    allowNegative: true,
+  }]);
 }
 saveCashCategories();
 if (!cashCategories.some((c) => c.label === "Owner's Drawings")) {
@@ -481,6 +510,23 @@ if (!cashCategories.some((c) => c.label === "Owner's Drawings")) {
     reg: false,
     custom: false,
   });
+  saveCashCategories();
+}
+if (!cashCategories.some((c) => c.label === "Petty Cash")) {
+  cashCategories.push([{
+    label: "Petty Cash",
+    dir: "out",
+    account: "Petty Cash",
+    reg: false,
+    custom: false,
+  },
+  {
+    label: "Petty Cash",
+    dir: "out",
+    account: "Petty Cash",
+    reg: false,
+    custom: false,
+  }]);
   saveCashCategories();
 }
 
