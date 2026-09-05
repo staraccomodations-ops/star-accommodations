@@ -297,9 +297,9 @@ function openCashEntry(presetCategoryLabel) {
   let b =
     `` +
     `<div class="form-row"><div class="form-group"><label>Date</label><input type="date" id="cb-date" value="${today()}"></div><div class="form-group"><label>Account</label><select id="cb-method">${PAYMENT_METHOD_OPTIONS.map((m) => `<option value="${m.value}">${m.label}</option>`).join("")}</select></div></div>` +
-    // `<div id="cb-cash-type-group" style="${adminUnlocked ? "display:none" : "display:none"}"><div class="form-group"><label>Cash Type</label><select id="cb-cash-type"><option value="general">General Cash</option><option value="petty">Petty Cash</option></select></div></div>` +
+    `<div id="cb-cash-type-group" style="${adminUnlocked ? "display:none" : "display:none"}"><div class="form-group"><label>Cash Type</label><select id="cb-cash-type"><option value="general">General Cash</option><option value="petty">Petty Cash</option></select></div></div>` +
     // Change display:none to allow account selection when logged in as admin:
-    `<div id="cb-cash-type-group"><div class="form-group"><label>Cash Type</label><select id="cb-cash-type"><option value="general">General Cash</option><option value="petty">Petty Cash</option></select></div></div>` +
+    // `<div id="cb-cash-type-group"><div class="form-group"><label>Cash Type</label><select id="cb-cash-type"><option value="general">General Cash</option><option value="petty">Petty Cash</option></select></div></div>` +
     favChipsHtml +
     `<div class="form-group"><label>What was this money for? *</label><div class="ac-wrap"><input id="cb-cat" autocomplete="off" spellcheck="false" placeholder="Type to search..."><div id="cb-ac" class="ac-list" style="display:none;"></div></div><div id="cb-prev" class="text-muted" style="font-size:12px;margin-top:6px;">Start typing and pick from the list.</div></div>` +
     `<div class="form-group" id="cb-subcat-group" style="display:none;"><label>Item / Subcategory</label><select id="cb-subcat"></select></div>` +
