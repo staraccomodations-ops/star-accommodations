@@ -671,16 +671,35 @@ function computeCashBalances() {
     bankBal = 0,
     cardBal = 0,
     companyBal = 0;
+
   cashbook.forEach((e) => {
-    if (e.method === "bank") bankBal += e.dir === "in" ? e.amount : -e.amount;
-    else if (e.method === "card")
+    if (e.archived) return; // Skip archived entries
+
+    const isPettyCat = e.catLabel === "Petty Cash" || e.account === "Petty Cash";
+
+    // 1. Bank, Card & Company balances
+    if (e.method === "bank") {
+      bankBal += e.dir === "in" ? e.amount : -e.amount;
+    } else if (e.method === "card") {
       cardBal += e.dir === "in" ? e.amount : -e.amount;
-    else if (e.method === "company")
+    } else if (e.method === "company") {
       companyBal += e.dir === "in" ? e.amount : -e.amount;
-    else if (e.cashType === "petty")
+    } 
+    // 2. Petty Cash Top-Up (Money In) -> General Cash se minus, Petty Cash me add
+    else if (isPettyCat && e.dir === "in") {
+      generalCash -= e.amount;
+      pettyCash += e.amount;
+    } 
+    // 3. Petty Cash Expenses (Money Out) -> Petty Cash se minus
+    else if (e.cashType === "petty" || (isPettyCat && e.dir === "out")) {
       pettyCash += e.dir === "in" ? e.amount : -e.amount;
-    else generalCash += e.dir === "in" ? e.amount : -e.amount;
+    } 
+    // 4. Normal General Cash Entries
+    else {
+      generalCash += e.dir === "in" ? e.amount : -e.amount;
+    }
   });
+
   return { generalCash, pettyCash, bankBal, cardBal, companyBal };
 }
 

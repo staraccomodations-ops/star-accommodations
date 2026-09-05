@@ -297,7 +297,9 @@ function openCashEntry(presetCategoryLabel) {
   let b =
     `` +
     `<div class="form-row"><div class="form-group"><label>Date</label><input type="date" id="cb-date" value="${today()}"></div><div class="form-group"><label>Account</label><select id="cb-method">${PAYMENT_METHOD_OPTIONS.map((m) => `<option value="${m.value}">${m.label}</option>`).join("")}</select></div></div>` +
-    `<div id="cb-cash-type-group" style="${adminUnlocked ? "display:none" : "display:none"}"><div class="form-group"><label>Cash Type</label><select id="cb-cash-type"><option value="general">General Cash</option><option value="petty">Petty Cash</option></select></div></div>` +
+    // `<div id="cb-cash-type-group" style="${adminUnlocked ? "display:none" : "display:none"}"><div class="form-group"><label>Cash Type</label><select id="cb-cash-type"><option value="general">General Cash</option><option value="petty">Petty Cash</option></select></div></div>` +
+    // Change display:none to allow account selection when logged in as admin:
+    `<div id="cb-cash-type-group"><div class="form-group"><label>Cash Type</label><select id="cb-cash-type"><option value="general">General Cash</option><option value="petty">Petty Cash</option></select></div></div>` +
     favChipsHtml +
     `<div class="form-group"><label>What was this money for? *</label><div class="ac-wrap"><input id="cb-cat" autocomplete="off" spellcheck="false" placeholder="Type to search..."><div id="cb-ac" class="ac-list" style="display:none;"></div></div><div id="cb-prev" class="text-muted" style="font-size:12px;margin-top:6px;">Start typing and pick from the list.</div></div>` +
     `<div class="form-group" id="cb-subcat-group" style="display:none;"><label>Item / Subcategory</label><select id="cb-subcat"></select></div>` +
@@ -322,9 +324,18 @@ function openCashEntry(presetCategoryLabel) {
       }
       // if (!amt || amt <= 0) { alert('Please enter an amount greater than zero.'); return false;  }
       const method = ov.querySelector("#cb-method").value;
+      // let cashType;
+      // if (adminUnlocked) {
+      //   cashType = ov.querySelector("#cb-cash-type").value;
+      // } else {
+      //   cashType = selected.dir === "in" ? "general" : "petty";
+      // }
       let cashType;
-      if (adminUnlocked) {
-        cashType = ov.querySelector("#cb-cash-type").value;
+      const cashTypeSelect = ov.querySelector("#cb-cash-type");
+
+      // Use selected cash type dropdown value if available, otherwise default appropriately
+      if (cashTypeSelect && cashTypeSelect.style.display !== "none") {
+        cashType = cashTypeSelect.value;
       } else {
         cashType = selected.dir === "in" ? "general" : "petty";
       }
@@ -719,6 +730,83 @@ function openManageSubcategories() {
   loadKey(currentKey);
 }
 
+// function postCashEntry(date, cat, amt, method, cashType, desc, month, silent) {
+//   cbSeq++;
+//   try {
+//     localStorage.setItem("hms_cbseq", JSON.stringify(cbSeq));
+//   } catch (e) {}
+//   const ref = "CB-" + pad3(cbSeq),
+//     id = uid(),
+//     note = desc || cat.label;
+//   const cashAcct = methodAccountName(method, cashType);
+//   cashbook.unshift({
+//     id,
+//     seq: cbSeq,
+//     date,
+//     desc,
+//     catLabel: cat.label,
+//     account: cat.account,
+//     dir: cat.dir,
+//     method,
+//     amount: amt,
+//     ref,
+//     cashType: cashType || "general",
+//     month: month,
+//     archived: false,
+//   });
+//   if (cat.dir === "in") {
+//     journal.unshift({
+//       id: uid(),
+//       date,
+//       ref,
+//       account: cashAcct,
+//       desc: note,
+//       dr: amt,
+//       cr: 0,
+//       source: "cashbook",
+//       cbId: id,
+//     });
+//     journal.unshift({
+//       id: uid(),
+//       date,
+//       ref,
+//       account: cat.account,
+//       desc: note,
+//       dr: 0,
+//       cr: amt,
+//       source: "cashbook",
+//       cbId: id,
+//     });
+//   } else {
+//     journal.unshift({
+//       id: uid(),
+//       date,
+//       ref,
+//       account: cat.account,
+//       desc: note,
+//       dr: amt,
+//       cr: 0,
+//       source: "cashbook",
+//       cbId: id,
+//     });
+//     journal.unshift({
+//       id: uid(),
+//       date,
+//       ref,
+//       account: cashAcct,
+//       desc: note,
+//       dr: 0,
+//       cr: amt,
+//       source: "cashbook",
+//       cbId: id,
+//     });
+//   }
+//   save();
+//   render();
+//   if (!silent) toast("Saved to cash book and posted to the ledger.");
+//   return id;
+// }
+
 function postCashEntry(date, cat, amt, method, cashType, desc, month, silent) {
   cbSeq++;
   try {
@@ -727,46 +815,73 @@ function postCashEntry(date, cat, amt, method, cashType, desc, month, silent) {
   const ref = "CB-" + pad3(cbSeq),
     id = uid(),
     note = desc || cat.label;
-  const cashAcct = methodAccountName(method, cashType);
-  cashbook.unshift({
-    id,
-    seq: cbSeq,
-    date,
-    desc,
-    catLabel: cat.label,
-    account: cat.account,
-    dir: cat.dir,
-    method,
-    amount: amt,
-    ref,
-    cashType: cashType || "general",
-    month: month,
-    archived: false,
-  });
-  if (cat.dir === "in") {
+
+  const isPettyCategory = cat.label === "Petty Cash" || cat.account === "Petty Cash";
+
+  // CASE 1: Petty Cash Top-up (General Cash -> Petty Cash)
+  // Jab Account General Cash ho aur Petty Cash (Money In) select karein
+  if (isPettyCategory && cat.dir === "in") {
+    cashbook.unshift({
+      id,
+      seq: cbSeq,
+      date,
+      desc,
+      catLabel: cat.label,
+      account: "Petty Cash",
+      dir: "in",
+      method,
+      amount: amt,
+      ref,
+      cashType: "general",
+      month: month,
+      archived: false,
+    });
+
+    // Petty Cash (Debit) +amt -> Increases Petty Cash
     journal.unshift({
       id: uid(),
       date,
       ref,
-      account: cashAcct,
+      account: "Petty Cash",
       desc: note,
       dr: amt,
       cr: 0,
       source: "cashbook",
       cbId: id,
     });
+
+    // General Cash (Credit) -amt -> Deducts from General Cash
     journal.unshift({
       id: uid(),
       date,
       ref,
-      account: cat.account,
+      account: "General Cash",
       desc: note,
       dr: 0,
       cr: amt,
       source: "cashbook",
       cbId: id,
     });
-  } else {
+  } 
+  // CASE 2: Petty Cash Expense (Money Out directly from Petty Cash)
+  else if (isPettyCategory && cat.dir === "out") {
+    cashbook.unshift({
+      id,
+      seq: cbSeq,
+      date,
+      desc,
+      catLabel: cat.label,
+      account: cat.account,
+      dir: "out",
+      method,
+      amount: amt,
+      ref,
+      cashType: "petty",
+      month: month,
+      archived: false,
+    });
+
+    // Expense Account Debit
     journal.unshift({
       id: uid(),
       date,
@@ -778,22 +893,92 @@ function postCashEntry(date, cat, amt, method, cashType, desc, month, silent) {
       source: "cashbook",
       cbId: id,
     });
+
+    // Petty Cash Credit -> Deducts from Petty Cash (General Cash safe rehta hai)
     journal.unshift({
       id: uid(),
       date,
       ref,
-      account: cashAcct,
+      account: "Petty Cash",
       desc: note,
       dr: 0,
       cr: amt,
       source: "cashbook",
       cbId: id,
     });
+  } 
+  // CASE 3: Standard Income/Expense (Baaqi tamam normal categories)
+  else {
+    const cashAcct = methodAccountName(method, cashType || "general");
+
+    cashbook.unshift({
+      id,
+      seq: cbSeq,
+      date,
+      desc,
+      catLabel: cat.label,
+      account: cat.account,
+      dir: cat.dir,
+      method,
+      amount: amt,
+      ref,
+      cashType: cashType || "general",
+      month: month,
+      archived: false,
+    });
+
+    if (cat.dir === "in") {
+      journal.unshift({
+        id: uid(),
+        date,
+        ref,
+        account: cashAcct,
+        desc: note,
+        dr: amt,
+        cr: 0,
+        source: "cashbook",
+        cbId: id,
+      });
+      journal.unshift({
+        id: uid(),
+        date,
+        ref,
+        account: cat.account,
+        desc: note,
+        dr: 0,
+        cr: amt,
+        source: "cashbook",
+        cbId: id,
+      });
+    } else {
+      journal.unshift({
+        id: uid(),
+        date,
+        ref,
+        account: cat.account,
+        desc: note,
+        dr: amt,
+        cr: 0,
+        source: "cashbook",
+        cbId: id,
+      });
+      journal.unshift({
+        id: uid(),
+        date,
+        ref,
+        account: cashAcct,
+        desc: note,
+        dr: 0,
+        cr: amt,
+        source: "cashbook",
+        cbId: id,
+      });
+    }
   }
+
   save();
   render();
   if (!silent) toast("Saved to cash book and posted to the ledger.");
   return id;
 }
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
