@@ -665,36 +665,69 @@ function saveRedeemRules() {
 // Central place to compute balances by payment method — avoids each caller
 // re-deriving this (which is exactly how a card/company entry once got
 // miscounted as "general cash" in one spot but not another).
+// function computeCashBalances() {
+//   let generalCash = 0,
+//     pettyCash = 0,
+//     bankBal = 0,
+//     cardBal = 0,
+//     companyBal = 0;
+
+//   cashbook.forEach((e) => {
+//     if (e.archived) return; // Skip archived entries
+
+//     const isPettyCat = e.catLabel === "Petty Cash" || e.account === "Petty Cash";
+
+//     // 1. Bank, Card & Company balances
+//     if (e.method === "bank") {
+//       bankBal += e.dir === "in" ? e.amount : -e.amount;
+//     } else if (e.method === "card") {
+//       cardBal += e.dir === "in" ? e.amount : -e.amount;
+//     } else if (e.method === "company") {
+//       companyBal += e.dir === "in" ? e.amount : -e.amount;
+//     } 
+//     // 2. Petty Cash Top-Up (Money In) -> General Cash se minus, Petty Cash me add
+//     else if (isPettyCat && e.dir === "in") {
+//       generalCash -= e.amount;
+//       pettyCash += e.amount;
+//     } 
+//     // 3. Petty Cash Expenses (Money Out) -> Petty Cash se minus
+//     else if (e.cashType === "petty" || (isPettyCat && e.dir === "out")) {
+//       pettyCash += e.dir === "in" ? e.amount : -e.amount;
+//     } 
+//     // 4. Normal General Cash Entries
+//     else {
+//       generalCash += e.dir === "in" ? e.amount : -e.amount;
+//     }
+//   });
+
+//   return { generalCash, pettyCash, bankBal, cardBal, companyBal };
+// }
+
+// js/00-state.js — computeCashBalances()
 function computeCashBalances() {
-  let generalCash = 0,
-    pettyCash = 0,
-    bankBal = 0,
-    cardBal = 0,
-    companyBal = 0;
+  let generalCash = 0, pettyCash = 0, bankBal = 0, cardBal = 0, companyBal = 0;
 
   cashbook.forEach((e) => {
-    if (e.archived) return; // Skip archived entries
+    if (e.archived) return;
 
     const isPettyCat = e.catLabel === "Petty Cash" || e.account === "Petty Cash";
 
-    // 1. Bank, Card & Company balances
     if (e.method === "bank") {
       bankBal += e.dir === "in" ? e.amount : -e.amount;
     } else if (e.method === "card") {
       cardBal += e.dir === "in" ? e.amount : -e.amount;
     } else if (e.method === "company") {
       companyBal += e.dir === "in" ? e.amount : -e.amount;
-    } 
-    // 2. Petty Cash Top-Up (Money In) -> General Cash se minus, Petty Cash me add
-    else if (isPettyCat && e.dir === "in") {
+    }
+    // Only apply the single-entry top-up rule when this ISN'T one leg of an
+    // already-double-entry replenish pair (that pair posts its own two legs below).
+    else if (isPettyCat && e.dir === "in" && !e.isReplenish) {
       generalCash -= e.amount;
       pettyCash += e.amount;
-    } 
-    // 3. Petty Cash Expenses (Money Out) -> Petty Cash se minus
+    }
     else if (e.cashType === "petty" || (isPettyCat && e.dir === "out")) {
       pettyCash += e.dir === "in" ? e.amount : -e.amount;
-    } 
-    // 4. Normal General Cash Entries
+    }
     else {
       generalCash += e.dir === "in" ? e.amount : -e.amount;
     }
@@ -953,27 +986,49 @@ function freeRoomLabel() {
   return `${(redeemRules.minPoints || 0).toLocaleString()} points = 1 free room`;
 }
 
-function save() {
-  try {
-    localStorage.setItem("hms_guests", JSON.stringify(guests));
-    localStorage.setItem("hms_txs", JSON.stringify(txs));
-    localStorage.setItem("hms_journal", JSON.stringify(journal));
-    localStorage.setItem("hms_cashbook", JSON.stringify(cashbook));
-    localStorage.setItem("hms_darkmode", JSON.stringify(darkMode));
-    localStorage.setItem("hms_tiers", JSON.stringify(tiers));
-    localStorage.setItem(
-      "hms_archived_cashbooks",
-      JSON.stringify(archivedCashbooks),
-    );
-    localStorage.setItem("hms_verifiers", JSON.stringify(verifiers));
-    localStorage.setItem(
-      "hms_last_saved",
-      JSON.stringify(new Date().toISOString()),
-    );
-    saveCoa();
-    saveCashCategories();
-  } catch (e) {}
-  scheduleSyncWrite();
-}
+// function save() {
+//   try {
+//     localStorage.setItem("hms_guests", JSON.stringify(guests));
+//     localStorage.setItem("hms_txs", JSON.stringify(txs));
+//     localStorage.setItem("hms_journal", JSON.stringify(journal));
+//     localStorage.setItem("hms_cashbook", JSON.stringify(cashbook));
+//     localStorage.setItem("hms_darkmode", JSON.stringify(darkMode));
+//     localStorage.setItem("hms_tiers", JSON.stringify(tiers));
+//     localStorage.setItem(
+//       "hms_archived_cashbooks",
+//       JSON.stringify(archivedCashbooks),
+//     );
+//     localStorage.setItem("hms_verifiers", JSON.stringify(verifiers));
+//     localStorage.setItem(
+//       "hms_last_saved",
+//       JSON.stringify(new Date().toISOString()),
+//     );
+//     saveCoa();
+//     saveCashCategories();
+//   } catch (e) {}
+//   scheduleSyncWrite();
+// }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+function save() {
+  let ok = true;
+  const setSafe = (k, v) => {
+    try { localStorage.setItem(k, JSON.stringify(v)); }
+    catch (e) { ok = false; }
+  };
+  setSafe("hms_guests", guests);
+  setSafe("hms_txs", txs);
+  setSafe("hms_journal", journal);
+  setSafe("hms_cashbook", cashbook);
+  setSafe("hms_darkmode", darkMode);
+  setSafe("hms_tiers", tiers);
+  setSafe("hms_archived_cashbooks", archivedCashbooks);
+  setSafe("hms_verifiers", verifiers);
+  setSafe("hms_last_saved", new Date().toISOString());
+  saveCoa();
+  saveCashCategories();
+  if (!ok) toast('⚠️ Some data failed to save locally — storage may be full. Export a backup soon.');
+  scheduleSyncWrite();
+}
