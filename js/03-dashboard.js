@@ -30,6 +30,28 @@
                 `<div class="card"><div class="card-label">Points Issued</div><div class="card-value teal-t">${t.pts >= 1000 ? Math.round(t.pts/1000)+'K' : t.pts.toLocaleString()}</div><div class="card-sub">Across all members</div></div>`;
             h +=
                 `<div class="card"><div class="card-label">${esc(T.name)} Benefits</div><div class="card-value navy-t">${T.discount}% off · ${(redeemRules.earnPerRoom||0).toLocaleString()} pts/room</div><div class="card-sub">All members enjoy the same perks</div></div>`;
+            // h += `</div>`;
+
+            // h += `<div class="grid-2" style="margin-bottom:16px;">`;
+                        h += `</div>`;
+
+            const cbal = computeCashBalances();
+            const totalCashOnHand = cbal.generalCash + cbal.pettyCash;
+            h += `<div class="grid-3" style="margin-bottom:20px;">`;
+            h +=
+                `<div class="card"><div class="card-label">General Cash</div><div class="card-value teal-t">${PKR(cbal.generalCash)}</div><div class="card-sub">Physical cash on hand</div></div>`;
+            h +=
+                `<div class="card"><div class="card-label">Petty Cash</div><div class="card-value teal-t">${PKR(cbal.pettyCash)}</div><div class="card-sub">Small expenses fund</div></div>`;
+            h +=
+                `<div class="card"><div class="card-label">Total Cash on Hand</div><div class="card-value gold-t">${PKR(totalCashOnHand)}</div><div class="card-sub">General + Petty</div></div>`;
+            if (adminUnlocked) {
+                h +=
+                    `<div class="card"><div class="card-label">Bank Balance</div><div class="card-value">${PKR(cbal.bankBal)}</div><div class="card-sub">In bank account</div></div>`;
+                h +=
+                    `<div class="card"><div class="card-label">Credit Card</div><div class="card-value">${PKR(cbal.cardBal)}</div><div class="card-sub">Pending card settlements</div></div>`;
+                h +=
+                    `<div class="card"><div class="card-label">Company Accounts</div><div class="card-value">${PKR(cbal.companyBal)}</div><div class="card-sub">Owed by corporate accounts</div></div>`;
+            }
             h += `</div>`;
 
             h += `<div class="grid-2" style="margin-bottom:16px;">`;

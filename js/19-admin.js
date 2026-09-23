@@ -74,7 +74,8 @@
                 `<div id="ap-err" style="font-size:12px;color:var(--coral);display:none;">Incorrect passcode. Please try again.</div>` +
                 `<div id="ap-hint" style="font-size:12px;color:var(--text-secondary);display:none;margin-top:8px;">Still not working? If the passcode was set on another computer, this device may have an old value. Try refreshing from the sync file.</div>` +
                 recoverBtn;
-            const ov = modal('<ion-icon name="key"></ion-icon> Admin Access', b, async function(ov) {
+            // const ov = modal('<ion-icon name="key"></ion-icon> Admin Access', b, async function(ov) {
+            const ov = modal('<ion-icon name="key"></ion-icon> Admin Access', b, function(ov) {
                 const p = ov.querySelector('#ap-in').value;
                 if (p !== adminPass) {
                     wrongAttempts++;

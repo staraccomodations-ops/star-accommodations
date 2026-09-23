@@ -886,6 +886,7 @@ function openEditCashEntry(id) {
     alert("Entry not found.");
     return;
   }
+
   if (entry.isReplenish || entry.isTransfer) {
     alert(
       "This entry is one half of a paired transfer and can't be edited directly. Delete both linked entries and redo the transfer instead.",
@@ -1078,33 +1079,55 @@ function openEditCashEntry(id) {
 
 // js/16-guest-booking.js — deleteCashEntry()
 function deleteCashEntry(id) {
-    const entry = byId(cashbook, id);
-    if (!entry) { noticeModal('Entry not found.', 'Delete cash entry'); return; }
-    if (isOlderThanWeek(entry.date) && !adminUnlocked) {
-        noticeModal('This entry is older than 7 days. Switch to Admin mode to delete it.', 'Admin required');
-        return;
-    }
-    const linkedBooking = txs.find(t => t.cashEntryId === id);
-    if (linkedBooking) {
-        noticeModal('This cash entry is the payment recorded for a booking. To remove it, delete that booking — or edit the booking to change the amount paid — on the Bookings page.', 'Linked to a booking');
-        return;
-    }
+  const entry = byId(cashbook, id);
+  if (!entry) {
+    noticeModal("Entry not found.", "Delete cash entry");
+    return;
+  }
+  if (isOlderThanWeek(entry.date) && !adminUnlocked) {
+    noticeModal(
+      "This entry is older than 7 days. Switch to Admin mode to delete it.",
+      "Admin required",
+    );
+    return;
+  }
+  const linkedBooking = txs.find((t) => t.cashEntryId === id);
+  if (linkedBooking) {
+    noticeModal(
+      "This cash entry is the payment recorded for a booking. To remove it, delete that booking — or edit the booking to change the amount paid — on the Bookings page.",
+      "Linked to a booking",
+    );
+    return;
+  }
 
-    const pairId = (entry.isReplenish && entry.replenishPair) || (entry.isTransfer && entry.transferPair);
-    const pair = pairId ? byId(cashbook, pairId) : null;
+  // const pairId = (entry.isReplenish && entry.replenishPair) || (entry.isTransfer && entry.transferPair);
+  // const pair = pairId ? byId(cashbook, pairId) : null;
 
-    const msg = pair
-        ? `This is part of a paired transaction with "${esc(pair.catLabel)}". Both entries will be deleted together to keep the books balanced. Continue?`
-        : 'Delete this cash book entry? It will also be removed from the ledger.';
-
-    confirmModal(msg, function() {
-        const idsToRemove = pair ? [id, pairId] : [id];
-        cashbook = cashbook.filter(e => !idsToRemove.includes(e.id));
-        journal = journal.filter(j => !idsToRemove.includes(j.cbId));
-        save();
-        render();
-        toast(pair ? 'Both linked entries deleted.' : 'Entry deleted.');
-    }, { danger: true, title: 'Delete cash entry', yesLabel: 'Delete' });
+  let msg =
+    "Delete this cash book entry? It will also be removed from the ledger.";
+  let pairId = null;
+  if (
+    (entry.isReplenish && entry.replenishPair) ||
+    (entry.isTransfer && entry.transferPair)
+  ) {
+    pairId = entry.replenishPair || entry.transferPair;
+    const pair = byId(cashbook, pairId);
+    if (pair)
+      msg = `This is part of a paired transaction with "${esc(pair.catLabel)}". Both linked entries will be deleted together to keep the books balanced. Continue?`;
+    else pairId = null;
+  }
+  confirmModal(
+    msg,
+    function () {
+      const idsToRemove = pairId ? [id, pairId] : [id];
+      cashbook = cashbook.filter((e) => !idsToRemove.includes(e.id));
+      journal = journal.filter((j) => !idsToRemove.includes(j.cbId));
+      save();
+      render();
+      toast(pairId ? "Both linked entries deleted." : "Entry deleted.");
+    },
+    { danger: true, title: "Delete cash entry", yesLabel: "Delete" },
+  );
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

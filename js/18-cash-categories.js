@@ -324,21 +324,21 @@ function openCashEntry(presetCategoryLabel) {
       }
       // if (!amt || amt <= 0) { alert('Please enter an amount greater than zero.'); return false;  }
       const method = ov.querySelector("#cb-method").value;
-      // let cashType;
-      // if (adminUnlocked) {
-      //   cashType = ov.querySelector("#cb-cash-type").value;
-      // } else {
-      //   cashType = selected.dir === "in" ? "general" : "petty";
-      // }
       let cashType;
-      const cashTypeSelect = ov.querySelector("#cb-cash-type");
-
-      // Use selected cash type dropdown value if available, otherwise default appropriately
-      if (cashTypeSelect && cashTypeSelect.style.display !== "none") {
-        cashType = cashTypeSelect.value;
+      if (adminUnlocked) {
+        cashType = ov.querySelector("#cb-cash-type").value;
       } else {
         cashType = selected.dir === "in" ? "general" : "petty";
       }
+      // let cashType;
+      // const cashTypeSelect = ov.querySelector("#cb-cash-type");
+
+      // // Use selected cash type dropdown value if available, otherwise default appropriately
+      // if (cashTypeSelect && cashTypeSelect.style.display !== "none") {
+      //   cashType = cashTypeSelect.value;
+      // } else {
+      //   cashType = selected.dir === "in" ? "general" : "petty";
+      // }
       const date = ov.querySelector("#cb-date").value;
       const month = getMonthFromDate(date);
       let finalDesc = ov.querySelector("#cb-desc").value.trim();
