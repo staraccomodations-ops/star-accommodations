@@ -357,7 +357,7 @@ function openAddTx() {
     if (id === "nonmember") {
       selectedGuestId = "nonmember";
       selectedGuest = null;
-      input.value = '<ion-icon name="walk"></ion-icon> Non-member (no points)';
+      input.value = 'Non-member (no points)';
       preview.innerHTML =
         "Non-member — no discount, no points. Please enter guest name.";
       nonMemberGroup.style.display = "block";
@@ -531,12 +531,16 @@ function openEditBooking(id) {
       g.id === tx.gId && !tx.nonMember && !tx.isCompany ? "selected" : "";
     guestOpts += `<option value="${g.id}" ${sel}>${esc(g.name)} (Member)</option>`;
   });
+  console.log(tx.nonMember);
+  
 
   const b =
-    `` +
+    `` + 
+    `<div class="form-group"><label>Guest *</label><select id="e-guest">${guestOpts}</select></div>` +
     `<div id="e-nonmember-name-group" style="${tx.nonMember ? "display:block" : "display:none"}; margin-bottom:12px;"><div class="form-group"><label>Guest Name *</label><input id="e-nonmember-name" value="${esc(tx.nonMemberName || "")}" placeholder="Enter guest name..."></div></div>` +
     `<div class="form-row"><div class="form-group"><label>Date</label><input type="date" id="e-date" value="${esc(tx.date)}"></div><div class="form-group"><label>Number of Rooms</label><select id="e-rooms">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map((r) => `<option value="${r}" ${tx.rooms === r ? "selected" : ""}>${r}</option>`).join("")}</select></div></div>` +
     `<div class="form-row"><div class="form-group"><label>Price per Room (Rs.)</label><input type="number" min="0" id="e-price" value="${tx.pricePerRoom || 0}"></div><div class="form-group"><label>Number of Nights</label><input type="number" min="1" id="e-nights" value="${tx.nights || 1}"></div></div>` +
+    `<div id="e-discount-section" style="display:none; margin-bottom:12px; padding:12px; background:var(--surface-2); border-radius:var(--radius-sm); border-left:3px solid var(--gold);"><div class="text-secondary" style="font-size:12px;"><ion-icon name="checkmark-circle"></ion-icon> Member discount (10%) automatically applied.</div></div>` +
     `` +
     `<div class="total-preview" id="e-total-preview">
                     <div class="line"><span>Subtotal</span><span id="e-subtotal">Rs. 0</span></div>
@@ -548,15 +552,19 @@ function openEditBooking(id) {
                 </div>` +
     `<div class="form-group"><label>Description</label><input id="e-desc" value="${esc(tx.desc)}"></div>`;
 
+    
+
   const ov = modal(
     '<ion-icon name="create"></ion-icon> Edit Booking',
     b,
     function (ov) {
-      const guestVal = ov.querySelector("#e-guest").value;
-      const amt = parseFloat(ov.querySelector("#e-price").value);
-      const nights = parseInt(ov.querySelector("#e-nights").value) || 1;
-      const rooms = parseInt(ov.querySelector("#e-rooms").value) || 1;
-      const date = ov.querySelector("#e-date").value;
+      console.log(ov);
+      const guestVal = ov.querySelector("#e-guest")?.value;
+      console.log(guestVal);
+      const amt = parseFloat(ov.querySelector("#e-price")?.value);
+      const nights = parseInt(ov.querySelector("#e-nights")?.value) || 1;
+      const rooms = parseInt(ov.querySelector("#e-rooms")?.value) || 1;
+      const date = ov.querySelector("#e-date")?.value;
       const isNonMember = guestVal === "nonmember";
       const isCompany =
         typeof guestVal === "string" && guestVal.indexOf("company:") === 0;
