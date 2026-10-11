@@ -484,22 +484,24 @@ let capitalCat = cashCategories.find((c) => c.label === "Owner's Capital");
 if (capitalCat) {
   capitalCat.allowNegative = true;
 } else {
-  cashCategories.push([{
-    label: "Owner's Capital",
-    dir: "in",
-    account: "Owner's Capital",
-    reg: false,
-    custom: false,
-    allowNegative: true,
-  },
-  {
-    label: "Owner's Capital",
-    dir: "out",
-    account: "Owner's Capital",
-    reg: false,
-    custom: false,
-    allowNegative: true,
-  }]);
+  cashCategories.push([
+    {
+      label: "Owner's Capital",
+      dir: "in",
+      account: "Owner's Capital",
+      reg: false,
+      custom: false,
+      allowNegative: true,
+    },
+    {
+      label: "Owner's Capital",
+      dir: "out",
+      account: "Owner's Capital",
+      reg: false,
+      custom: false,
+      allowNegative: true,
+    },
+  ]);
 }
 saveCashCategories();
 if (!cashCategories.some((c) => c.label === "Owner's Drawings")) {
@@ -513,20 +515,22 @@ if (!cashCategories.some((c) => c.label === "Owner's Drawings")) {
   saveCashCategories();
 }
 if (!cashCategories.some((c) => c.label === "Petty Cash")) {
-  cashCategories.push([{
-    label: "Petty Cash",
-    dir: "out",
-    account: "Petty Cash",
-    reg: false,
-    custom: false,
-  },
-  {
-    label: "Petty Cash",
-    dir: "out",
-    account: "Petty Cash",
-    reg: false,
-    custom: false,
-  }]);
+  cashCategories.push([
+    {
+      label: "Petty Cash",
+      dir: "out",
+      account: "Petty Cash",
+      reg: false,
+      custom: false,
+    },
+    {
+      label: "Petty Cash",
+      dir: "out",
+      account: "Petty Cash",
+      reg: false,
+      custom: false,
+    },
+  ]);
   saveCashCategories();
 }
 
@@ -684,16 +688,16 @@ function saveRedeemRules() {
 //       cardBal += e.dir === "in" ? e.amount : -e.amount;
 //     } else if (e.method === "company") {
 //       companyBal += e.dir === "in" ? e.amount : -e.amount;
-//     } 
+//     }
 //     // 2. Petty Cash Top-Up (Money In) -> General Cash se minus, Petty Cash me add
 //     else if (isPettyCat && e.dir === "in") {
 //       generalCash -= e.amount;
 //       pettyCash += e.amount;
-//     } 
+//     }
 //     // 3. Petty Cash Expenses (Money Out) -> Petty Cash se minus
 //     else if (e.cashType === "petty" || (isPettyCat && e.dir === "out")) {
 //       pettyCash += e.dir === "in" ? e.amount : -e.amount;
-//     } 
+//     }
 //     // 4. Normal General Cash Entries
 //     else {
 //       generalCash += e.dir === "in" ? e.amount : -e.amount;
@@ -705,12 +709,17 @@ function saveRedeemRules() {
 
 // js/00-state.js — computeCashBalances()
 function computeCashBalances() {
-  let generalCash = 0, pettyCash = 0, bankBal = 0, cardBal = 0, companyBal = 0;
+  let generalCash = 0,
+    pettyCash = 0,
+    bankBal = 0,
+    cardBal = 0,
+    companyBal = 0;
 
   cashbook.forEach((e) => {
     if (e.archived) return;
 
-    const isPettyCat = e.catLabel === "Petty Cash" || e.account === "Petty Cash";
+    const isPettyCat =
+      e.catLabel === "Petty Cash" || e.account === "Petty Cash";
 
     if (e.method === "bank") {
       bankBal += e.dir === "in" ? e.amount : -e.amount;
@@ -724,14 +733,31 @@ function computeCashBalances() {
     else if (isPettyCat && e.dir === "in" && !e.isReplenish) {
       generalCash -= e.amount;
       pettyCash += e.amount;
-    }
-    else if (e.cashType === "petty" || (isPettyCat && e.dir === "out")) {
+    } else if (e.cashType === "petty" || (isPettyCat && e.dir === "out")) {
       pettyCash += e.dir === "in" ? e.amount : -e.amount;
-    }
-    else {
+    } else {
       generalCash += e.dir === "in" ? e.amount : -e.amount;
     }
   });
+
+  // Manual journal entries Cash Book row nahi banate, isliye yahan add karein
+  journal.forEach((j) => {
+    if (j.source !== "manual") return;
+    const delta = (j.dr || 0) - (j.cr || 0);
+    if (j.account === "General Cash") generalCash += delta;
+    else if (j.account === "Petty Cash") pettyCash += delta;
+    else if (j.account === "Bank Account") bankBal += delta;
+    else if (j.account === "Credit Card Account") cardBal += delta;
+    else if (j.account === "Accounts Receivable - Corporate")
+      companyBal += delta;
+  });
+
+  // Chart of Accounts ke opening balances
+  generalCash += findAccountMeta("General Cash").opening;
+  pettyCash += findAccountMeta("Petty Cash").opening;
+  bankBal += findAccountMeta("Bank Account").opening;
+  cardBal += findAccountMeta("Credit Card Account").opening;
+  companyBal += findAccountMeta("Accounts Receivable - Corporate").opening;
 
   return { generalCash, pettyCash, bankBal, cardBal, companyBal };
 }
@@ -1011,12 +1037,14 @@ function freeRoomLabel() {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-
 function save() {
   let ok = true;
   const setSafe = (k, v) => {
-    try { localStorage.setItem(k, JSON.stringify(v)); }
-    catch (e) { ok = false; }
+    try {
+      localStorage.setItem(k, JSON.stringify(v));
+    } catch (e) {
+      ok = false;
+    }
   };
   setSafe("hms_guests", guests);
   setSafe("hms_txs", txs);
@@ -1029,6 +1057,9 @@ function save() {
   setSafe("hms_last_saved", new Date().toISOString());
   saveCoa();
   saveCashCategories();
-  if (!ok) toast('⚠️ Some data failed to save locally — storage may be full. Export a backup soon.');
+  if (!ok)
+    toast(
+      "⚠️ Some data failed to save locally — storage may be full. Export a backup soon.",
+    );
   scheduleSyncWrite();
 }

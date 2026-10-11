@@ -1,20 +1,10 @@
-const CASH_LIKE_ACCOUNTS = [
-  "General Cash",
-  "Petty Cash",
-  "Bank Account",
-  "Credit Card Account",
-];
 //  ADD MANUAL JOURNAL ENTRY
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function openAddJE() {
   let opts = '<option value="">Select account...</option>';
   for (const sec in coa) {
     opts += `<optgroup label="${sec}">`;
-    // coa[sec].accts.forEach((a) => {
-    //   opts += `<option value="${esc(a.name)}">[${a.code}] ${esc(a.name)}</option>`;
-    // });
     coa[sec].accts.forEach((a) => {
-      if (CASH_LIKE_ACCOUNTS.includes(a.name)) return;
       opts += `<option value="${esc(a.name)}">[${a.code}] ${esc(a.name)}</option>`;
     });
     opts += `</optgroup>`;
@@ -45,15 +35,6 @@ function openAddJE() {
       }
       if (!amt || amt <= 0) {
         alert("Enter an amount greater than zero.");
-        return false;
-      }
-      if (
-        CASH_LIKE_ACCOUNTS.includes(drAcct) ||
-        CASH_LIKE_ACCOUNTS.includes(crAcct)
-      ) {
-        alert(
-          "General Cash, Petty Cash, Bank Account and Credit Card Account can't be posted to from a manual journal entry. Use the Cash Book, Replenish Petty Cash, or Transfer to Bank instead.",
-        );
         return false;
       }
 
